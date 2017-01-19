@@ -11,7 +11,16 @@ RUN apt-get -y upgrade
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y --fix-missing install php-cli \
       curl \
       php-curl \
+      cron \
+      ca-certificates \
       nano
+
+# Gosu
+RUN curl -o /usr/local/bin/gosu -SL "https://github.com/tianon/gosu/releases/download/1.4/gosu-$(dpkg --print-architecture)" \
+    && curl -o /usr/local/bin/gosu.asc -SL "https://github.com/tianon/gosu/releases/download/1.4/gosu-$(dpkg --print-architecture).asc" \
+    && gpg --verify /usr/local/bin/gosu.asc \
+    && rm /usr/local/bin/gosu.asc \
+    && chmod +x /usr/local/bin/gosu
 
 # Update php.ini
 ADD config/php/php.conf /etc/php/7.0/cli/php.ini
@@ -30,7 +39,6 @@ RUN mkdir /app
 RUN chmod -R 755 /app
 WORKDIR /app/php-tasks
 
-RUN apt-get install cron
 
 COPY config/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x  /usr/local/bin/entrypoint.sh
