@@ -26,4 +26,33 @@ sudo chmod -R g-w /path/to/cron.d
 sudo chown root:root -R /path/to/cron.d
 ```
 
-docker run -d -v /path/to/cron.d:/etc/cron.d --name cron docker-ubuntu16-php7-cron
+Sample task file
+```
+* * * * * root echo "Hello world/n" >> /var/log/cron.log 2>&1
+* * * * * root /usr/bin/php /app/php-tasks/task1.php >> /var/log/cron.log 2>&1
+```
+
+Sample script file (task1.php)
+```
+<?php
+
+echo "Task1\n";
+
+```
+
+Then run the container.
+```
+docker run -d -v /path/to/cron.d:/etc/cron.d -v /path/to/php-tasks:/app/php-tasks --name cron docker-ubuntu16-php7-cron
+```
+
+## Exposed volumes
+
+ - cron: `/etc/cron.d`
+ - php scripts: `/app/php-tasks`
+ 
+## Out of the box
+
+ * Ubuntu 16.04 LTS
+ * PHP7
+ * Cron
+ * Composer
